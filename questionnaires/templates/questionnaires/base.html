@@ -1,0 +1,17 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Questionnaires{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'questionnaires/app.css' %}">
+</head>
+<body>
+  <header class="topbar">
+    <a href="{% url 'questionnaire-list-page' %}" class="brand">Questionnaire Builder</a>
+    <nav><a href="{% url 'builder-new' %}" class="btn btn-primary">New questionnaire</a></nav>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

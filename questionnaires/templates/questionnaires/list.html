@@ -1,0 +1,26 @@
+{% extends 'questionnaires/base.html' %}
+
+{% block content %}
+<h1>Questionnaires</h1>
+{% if questionnaires %}
+<table class="table">
+  <thead><tr><th>Title</th><th>ID</th><th>Questions</th><th>Updated</th><th></th></tr></thead>
+  <tbody>
+  {% for q in questionnaires %}
+    <tr>
+      <td><a href="{% url 'builder-edit' q.pk %}">{{ q.title }}</a></td>
+      <td><code>{{ q.slug }}</code></td>
+      <td>{{ q.data.questions|length }}</td>
+      <td>{{ q.updated_at|date:"Y-m-d H:i" }}</td>
+      <td class="actions">
+        <a href="{% url 'builder-edit' q.pk %}">Edit</a>
+        <a href="{% url 'questionnaire-export' q.pk %}">Download JSON</a>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty">No questionnaires yet. <a href="{% url 'builder-new' %}">Create the first one.</a></p>
+{% endif %}
+{% endblock %}

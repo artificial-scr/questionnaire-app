@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://questionnaire-app.local/schema/questionnaire-1.0.schema.json",
+  "title": "Questionnaire",
+  "description": "A questionnaire definition, format version 1.0. See docs/questionnaire-format.md.",
+  "type": "object",
+  "required": ["schemaVersion", "id", "title", "questions"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "description": "Version of this format. Always \"1.0\" for this schema.",
+      "const": "1.0"
+    },
+    "id": { "$ref": "#/$defs/identifier" },
+    "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "description": { "type": "string", "maxLength": 5000 },
+    "questions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/question" }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "description": "Machine-readable identifier: starts with a letter, then letters, digits, '_' or '-'.",
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"
+    },
+    "option": {
+      "type": "object",
+      "required": ["value", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "value": { "$ref": "#/$defs/identifier" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 500 }
+      }
+    },
+    "question": {
+      "type": "object",
+      "required": ["id", "type", "text"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "type": {
+          "enum": ["text", "number", "single_choice", "multiple_choice", "boolean", "date", "scale"]
+        },
+        "text": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "help": { "type": "string", "maxLength": 2000 },
+        "required": { "type": "boolean", "default": false }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "text" } } },
+          "then": {
+            "properties": {
+              "multiline": { "type": "boolean", "default": false },
+              "maxLength": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "number" } } },
+          "then": {
+            "properties": {
+              "min": { "type": "number" },
+              "max": { "type": "number" },
+              "integer": { "type": "boolean", "default": false }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "single_choice" } } },
+          "then": {
+            "required": ["options"],
+            "properties": {
+              "options": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/option" } }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "multiple_choice" } } },
+          "then": {
+            "required": ["options"],
+            "properties": {
+              "options": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/option" } },
+              "minSelections": { "type": "integer", "minimum": 0 },
+              "maxSelections": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "scale" } } },
+          "then": {
+            "required": ["min", "max"],
+            "properties": {
+              "min": { "type": "integer" },
+              "max": { "type": "integer" },
+              "minLabel": { "type": "string", "maxLength": 100 },
+              "maxLabel": { "type": "string", "maxLength": 100 }
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    }
+  }
+}

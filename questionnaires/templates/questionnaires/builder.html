@@ -1,0 +1,49 @@
+{% extends 'questionnaires/base.html' %}
+{% load static %}
+
+{% block title %}{% if questionnaire %}Edit {{ questionnaire.title }}{% else %}New questionnaire{% endif %}{% endblock %}
+
+{% block content %}
+<div class="builder">
+  <section class="editor">
+    <div class="card">
+      <h2>Questionnaire</h2>
+      <label>Title <input id="q-title" type="text" maxlength="200" placeholder="Customer feedback"></label>
+      <label>ID <input id="q-id" type="text" maxlength="64" placeholder="customer-feedback">
+        <small>Letters, digits, <code>_</code> or <code>-</code>; must start with a letter. Used as the file name.</small>
+      </label>
+      <label>Description <textarea id="q-description" rows="2"></textarea></label>
+    </div>
+
+    <div id="questions"></div>
+
+    <div class="add-row">
+      <select id="new-type" aria-label="Question type"></select>
+      <button type="button" id="add-question" class="btn">Add question</button>
+    </div>
+
+    <div class="save-row">
+      <button type="button" id="save" class="btn btn-primary">Save</button>
+      <a id="download" class="btn" hidden>Download JSON</a>
+      <span id="status" role="status"></span>
+    </div>
+    <ul id="errors" class="errors"></ul>
+  </section>
+
+  <aside class="preview">
+    <h2>JSON</h2>
+    <pre id="json-preview"></pre>
+  </aside>
+</div>
+
+{{ pk|json_script:"questionnaire-pk" }}
+{{ data|json_script:"questionnaire-data" }}
+{% endblock %}
+
+{% block scripts %}
+{% csrf_token %}
+<script>
+  window.API_BASE = "{% url 'questionnaire-list' %}";
+</script>
+<script src="{% static 'questionnaires/builder.js' %}"></script>
+{% endblock %}

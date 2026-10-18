@@ -1,0 +1,44 @@
+# --- Instance data (differs per installation; never commit) ---
+
+# Database: holds the questionnaires saved on this machine
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+
+# Secrets and per-machine configuration
+.env
+.env.*
+!.env.example
+config/local_settings.py
+
+# Generated or uploaded files
+/staticfiles/
+/media/
+
+# Logs
+*.log
+logs/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+build/
+dist/
+
+# Test and coverage output
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+
+# --- Editors and OS ---
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
